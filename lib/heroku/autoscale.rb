@@ -29,6 +29,9 @@ module Heroku
 private ######################################################################
 
     def autoscale(env)
+      # dont do anything if we scaled too frequently ago
+      return if (Time.now - last_scaled) < options[:min_frequency]
+
       original_dynos = dynos = current_dynos
       wait = queue_wait(env)
 
@@ -74,7 +77,6 @@ private ######################################################################
     end
 
     def set_dynos(count)
-      return if (Time.now - last_scaled) < options[:min_frequency]
       heroku.set_dynos(options[:app_name], count)
       @last_scaled = Time.now
     end

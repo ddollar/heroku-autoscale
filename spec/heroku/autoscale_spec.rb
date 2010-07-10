@@ -85,7 +85,7 @@ describe Heroku::Autoscale do
 
     it "doesnt flap" do
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name").times(any_times) { { :dynos => 5 } }
+      heroku.info("test_app_name").once { { :dynos => 5 } }
       heroku.set_dynos.with_any_args.once
 
       mock(app).heroku.times(any_times) { heroku }
