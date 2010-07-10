@@ -6,7 +6,6 @@ $:.unshift File.expand_path("../lib", __FILE__)
 require "heroku/autoscale"
 
 task :default => :spec
-task :release => :man
 
 desc "Run all specs"
 Rspec::Core::RakeTask.new(:spec) do |t|
