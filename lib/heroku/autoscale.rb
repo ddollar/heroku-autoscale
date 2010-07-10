@@ -5,7 +5,7 @@ require "rack"
 module Heroku
   class Autoscale
 
-    VERSION = "0.2.0"
+    VERSION = "0.2.1"
 
     attr_reader :app, :options, :last_scaled
 
@@ -70,7 +70,7 @@ private ######################################################################
     end
 
     def queue_wait(env)
-      env["HTTP_X_HEROKU_QUEUE_WAIT_TIME"]
+      env["HTTP_X_HEROKU_QUEUE_WAIT_TIME"].to_i
     end
 
     def set_dynos(count)
