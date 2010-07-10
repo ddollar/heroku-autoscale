@@ -12,9 +12,15 @@ Gem::Specification.new do |s|
   s.date = %q{2010-07-09}
   s.description = %q{Autoscale your Heroku dynos}
   s.email = %q{ddollar@gmail.com}
+  s.extra_rdoc_files = [
+    "README.md"
+  ]
   s.files = [
-    "Rakefile",
-     "lib/heroku/autoscale.rb"
+    "README.md",
+     "Rakefile",
+     "lib/heroku/autoscale.rb",
+     "spec/heroku/autoscale_spec.rb",
+     "spec/spec_helper.rb"
   ]
   s.has_rdoc = false
   s.homepage = %q{http://github.com/ddollar/heroku-autoscale}
@@ -22,12 +28,17 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Autoscale your Heroku dynos}
+  s.test_files = [
+    "spec/heroku/autoscale_spec.rb",
+     "spec/spec_helper.rb"
+  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_development_dependency(%q<rack-test>, ["~> 0.5.4"])
       s.add_development_dependency(%q<rake>, ["~> 0.8.7"])
       s.add_development_dependency(%q<rcov>, ["~> 0.9.8"])
       s.add_development_dependency(%q<rr>, ["~> 0.10.11"])
@@ -36,6 +47,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<heroku>, ["~> 1.9"])
       s.add_runtime_dependency(%q<rack>, ["~> 1.0"])
     else
+      s.add_dependency(%q<rack-test>, ["~> 0.5.4"])
       s.add_dependency(%q<rake>, ["~> 0.8.7"])
       s.add_dependency(%q<rcov>, ["~> 0.9.8"])
       s.add_dependency(%q<rr>, ["~> 0.10.11"])
@@ -45,6 +57,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rack>, ["~> 1.0"])
     end
   else
+    s.add_dependency(%q<rack-test>, ["~> 0.5.4"])
     s.add_dependency(%q<rake>, ["~> 0.8.7"])
     s.add_dependency(%q<rcov>, ["~> 0.9.8"])
     s.add_dependency(%q<rr>, ["~> 0.10.11"])
