@@ -5,7 +5,7 @@ require "rack"
 module Heroku
   class Autoscale
 
-    VERSION = "0.1"
+    VERSION = "0.2.0"
 
     attr_reader :app, :options, :last_scaled
 
@@ -56,6 +56,7 @@ private ######################################################################
 
     def default_options
       {
+        :defer           => true,
         :min_dynos       => 1,
         :max_dynos       => 1,
         :queue_wait_high => 5000, # milliseconds
