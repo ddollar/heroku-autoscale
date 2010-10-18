@@ -1,5 +1,8 @@
 # Heroku::Autoscale
 
+WARNING: This gem is a proof of concept and should not be used in production
+applications.
+
 ## Installation
 
     # Gemfile
