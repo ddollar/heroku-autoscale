@@ -1,7 +1,8 @@
 # Heroku::Autoscale
 
-WARNING: This gem is a proof of concept and should not be used in production
-applications.
+## WARNING: This gem is a proof of concept and should not be used in production applications.
+## There is currently no mechanism to prevent multiple dynos on the same app all running this code
+## from fighting each other for control.
 
 ## Installation
 
