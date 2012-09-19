@@ -31,7 +31,7 @@ module Heroku
     # Use either cache or instance variable to store last_scaled
     def last_scaled
       if supported_cache?
-        Rails.cache.read "heroku_autoscale:last_scaled"
+        Rails.cache.read "heroku-autoscale:last_scaled"
       else
         @last_scaled
       end
@@ -39,7 +39,7 @@ module Heroku
 
     def last_scaled=(time)
       if supported_cache?
-        Rails.cache.write "heroku_autoscale:last_scaled", time
+        Rails.cache.write "heroku-autoscale:last_scaled", time
       else
         @last_scaled = time
       end
@@ -109,14 +109,14 @@ private ######################################################################
     end
 
     def obtain_lock
-      return false if Rails.cache.read "heroku_autoscale:lock"
+      return false if Rails.cache.read "heroku-autoscale:lock"
       # Expire lock in 30 seconds, in case something
       # happens to the server and it can't release the lock
-      Rails.cache.write "heroku_autoscale:lock", true, :expires_in => 30
+      Rails.cache.write "heroku-autoscale:lock", true, :expires_in => 30
     end
 
     def release_lock
-      Rails.cache.delete "heroku_autoscale:lock"
+      Rails.cache.delete "heroku-autoscale:lock"
     end
   end
 end
