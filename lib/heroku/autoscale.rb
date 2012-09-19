@@ -64,8 +64,6 @@ private ######################################################################
       dynos = 1 if dynos < 1
 
       set_dynos(dynos) if dynos != original_dynos
-
-    ensure
       supported_cache? && release_lock
     end
 

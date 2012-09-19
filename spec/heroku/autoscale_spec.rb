@@ -92,6 +92,30 @@ describe Heroku::Autoscale do
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
     end
+
+    it "sets a lock so that multiple processes don't fight for control" do
+      app.instance_variable_set "@supported_cache", true
+      cache = double('cache')
+      Rails.stub(:cache).and_return(cache)
+
+      heroku = mock(Heroku::Client)
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 1 })
+      heroku.should_receive(:set_dynos).once
+      app.stub(:heroku).and_return(heroku)
+
+      cache.should_receive(:read).with("heroku_autoscale:last_scaled").and_return(Time.now - 60)
+      cache.should_receive(:read).with("heroku_autoscale:lock").and_return(nil)
+      cache.should_receive(:write).with("heroku_autoscale:lock", true, {:expires_in => 30}).and_return(true)
+      cache.should_receive(:write).with("heroku_autoscale:last_scaled", anything)
+      cache.should_receive(:delete).with("heroku_autoscale:lock")
+      app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 101 })
+
+      cache.should_receive(:read).with("heroku_autoscale:last_scaled").and_return(Time.now - 60)
+      cache.should_receive(:read).with("heroku_autoscale:lock").and_return(true)
+      cache.should_not_receive(:write)
+      cache.should_not_receive(:delete)
+      app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
+    end
   end
 
 end
