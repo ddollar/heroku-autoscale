@@ -6,7 +6,7 @@ describe Heroku::Autoscale do
   include Rack::Test::Methods
 
   def noop
-    lambda {}
+    lambda {|*args| }
   end
 
   describe "option validation" do
@@ -39,56 +39,56 @@ describe Heroku::Autoscale do
 
     it "scales up" do
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name") { { :dynos => 1 } }
-      heroku.set_dynos("test_app_name", 2)
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 1 })
+      heroku.should_receive(:set_dynos).with("test_app_name", 2)
 
-      mock(app).heroku.times(any_times) { heroku }
+      app.stub(:heroku).and_return(heroku)
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 101 })
     end
 
     it "scales down" do
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name") { { :dynos => 3 } }
-      heroku.set_dynos("test_app_name", 2)
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 3 })
+      heroku.should_receive(:set_dynos).with("test_app_name", 2)
 
-      mock(app).heroku.times(any_times) { heroku }
+      app.stub(:heroku).and_return(heroku)
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
     end
 
     it "wont go below one dyno" do
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name") { { :dynos => 1 } }
-      heroku.set_dynos.times(0)
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 1 })
+      heroku.should_not_receive(:set_dynos)
 
-      mock(app).heroku.times(any_times) { heroku }
+      app.stub(:heroku).and_return(heroku)
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
     end
 
     it "respects max dynos" do
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name") { { :dynos => 10 } }
-      heroku.set_dynos.times(0)
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 10 })
+      heroku.should_not_receive(:set_dynos)
 
-      mock(app).heroku.times(any_times) { heroku }
+      app.stub(:heroku).and_return(heroku)
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 101 })
     end
 
     it "respects min dynos" do
       app.options[:min_dynos] = 2
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name") { { :dynos => 2 } }
-      heroku.set_dynos.times(0)
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 2 })
+      heroku.should_not_receive(:set_dynos)
 
-      mock(app).heroku.times(any_times) { heroku }
+      app.stub(:heroku).and_return(heroku)
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
     end
 
     it "doesnt flap" do
       heroku = mock(Heroku::Client)
-      heroku.info("test_app_name").once { { :dynos => 5 } }
-      heroku.set_dynos.with_any_args.once
+      heroku.should_receive(:info).with("test_app_name").and_return({ :dynos => 5 })
+      heroku.should_receive(:set_dynos).once
 
-      mock(app).heroku.times(any_times) { heroku }
+      app.stub(:heroku).and_return(heroku)
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
       app.call({ "HTTP_X_HEROKU_QUEUE_WAIT_TIME" => 9 })
     end
