@@ -27,6 +27,24 @@ module Heroku
       app.call(env)
     end
 
+
+    # Use either cache or instance variable to store last_scaled
+    def last_scaled
+      if supported_cache?
+        Rails.cache.read "heroku_autoscale:last_scaled"
+      else
+        @last_scaled
+      end
+    end
+
+    def last_scaled=(time)
+      if supported_cache?
+        Rails.cache.write "heroku_autoscale:last_scaled", time
+      else
+        @last_scaled = time
+      end
+    end
+
 private ######################################################################
 
     def autoscale(env)
@@ -101,23 +119,6 @@ private ######################################################################
 
     def release_lock
       Rails.cache.delete "heroku_autoscale:lock"
-    end
-
-    # Use either cache or instance variable to store last_scaled
-    def last_scaled
-      if supported_cache?
-        Rails.cache.read "heroku_autoscale:last_scaled"
-      else
-        @last_scaled
-      end
-    end
-
-    def last_scaled=(time)
-      if supported_cache?
-        Rails.cache.write "heroku_autoscale:last_scaled", time
-      else
-        @last_scaled = time
-      end
     end
   end
 end
