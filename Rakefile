@@ -8,7 +8,7 @@ require "heroku/autoscale"
 task :default => :spec
 
 desc "Run all specs"
-Rspec::Core::RakeTask.new(:spec) do |t|
+RSpec::Core::RakeTask.new(:spec) do |t|
   t.pattern = 'spec/**/*_spec.rb'
 end
 
@@ -17,7 +17,7 @@ task :rcov => "rcov:build" do
   %x{ open coverage/index.html }
 end
 
-Rspec::Core::RakeTask.new("rcov:build") do |t|
+RSpec::Core::RakeTask.new("rcov:build") do |t|
   t.pattern = 'spec/**/*_spec.rb'
   t.rcov = true
   t.rcov_opts = [ "--exclude", Gem.default_dir , "--exclude", "spec" ]
